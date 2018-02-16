@@ -1,3 +1,13 @@
+# Movie trailer generation
+
+Use extract_feature.py, modify the path to point to you desire path.
+
+
+Download the `sports1m_finetuning_ucf101.model` model for extraction.
+
+
+You can also retrained the model with the instruction below, however, to achieve `sports1m_finetuning_ucf101.model` performance you need to train for >2000 iteration. The first hundreds iteration will look hopeless but you will get good result from >1000 iter.
+
 # C3D-tensorflow
 
 This is a repository trying to implement [C3D-caffe][5] on tensorflow,useing models directly converted from original C3D-caffe.    
