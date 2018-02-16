@@ -36,7 +36,7 @@ NUM_FRAMES_PER_CLIP = 16
 
 def conv3d(name, l_input, w, b):
   return tf.nn.bias_add(
-          tf.nn.conv3d(l_input, w, strides=[1, 1, 1, 1, 1], padding='SAME'),
+          tf.nn.conv3d(l_input, w, strides=[1, 1, 1, 1, 1], padding='SAME', name=name),
           b
           )
 
@@ -78,7 +78,7 @@ def inference_c3d(_X, _dropout, batch_size, _weights, _biases):
 
   # Fully connected layer
   pool5 = tf.transpose(pool5, perm=[0,1,4,2,3])
-  dense1 = tf.reshape(pool5, [batch_size, _weights['wd1'].get_shape().as_list()[0]]) # Reshape conv3 output to fit dense layer input
+  dense1 = tf.reshape(pool5, [batch_size, _weights['wd1'].get_shape().as_list()[0]], name="flatten") # Reshape conv3 output to fit dense layer input
   dense1 = tf.matmul(dense1, _weights['wd1']) + _biases['bd1']
 
   dense1 = tf.nn.relu(dense1, name='fc1') # Relu activation

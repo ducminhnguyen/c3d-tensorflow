@@ -1,0 +1,5 @@
+.idea/*
+*.pyc
+data/*
+visual_logs/*
+models/*

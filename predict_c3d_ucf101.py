@@ -26,6 +26,7 @@ import tensorflow as tf
 import input_data
 import c3d_model
 import numpy as np
+import datetime
 
 # Basic model parameters as external flags.
 flags = tf.app.flags
@@ -68,9 +69,10 @@ def _variable_with_weight_decay(name, shape, stddev, wd):
   return var
 
 def run_test():
-  model_name = "./sports1m_finetuning_ucf101.model"
-  test_list_file = 'list/test.list'
+  model_name = "./models/sports1m_finetuning_ucf101.model"
+  test_list_file = './test.list'
   num_test_videos = len(list(open(test_list_file,'r')))
+  num_correct_video = 0
   print("Number of test videos={}".format(num_test_videos))
 
   # Get the sets of images and labels for training, validation, and
@@ -117,7 +119,7 @@ def run_test():
   saver.restore(sess, model_name)
   # And then after everything is built, start the training loop.
   bufsize = 0
-  write_file = open("predict_ret.txt", "w+", bufsize)
+  write_file = open("predict_ret_" + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + ".txt", "w+", bufsize)
   next_start_pos = 0
   all_steps = int((num_test_videos - 1) / (FLAGS.batch_size * gpu_num) + 1)
   for step in xrange(all_steps):
@@ -138,11 +140,14 @@ def run_test():
       true_label = test_labels[i],
       top1_predicted_label = np.argmax(predict_score[i])
       # Write results: true label, class prob for true label, predicted label, class prob for predicted label
+      if (top1_predicted_label == true_label):
+        num_correct_video += 1
       write_file.write('{}, {}, {}, {}\n'.format(
               true_label[0],
               predict_score[i][true_label],
               top1_predicted_label,
               predict_score[i][top1_predicted_label]))
+  write_file.write(str(num_correct_video / num_test_videos))
   write_file.close()
   print("done")
 
